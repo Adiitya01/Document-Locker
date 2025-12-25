@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-docx
+lxml
+python-multipart
+openpyxl
+xlrd
+gunicorn

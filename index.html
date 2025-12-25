@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Template Locker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 50px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #1a1a1a;
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .upload-area {
+            border: 2px dashed #999;
+            border-radius: 6px;
+            padding: 45px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            border-color: #333;
+            background: #f0f0f0;
+        }
+
+        .upload-area.dragover {
+            border-color: #333;
+            background: #f0f0f0;
+        }
+
+        .upload-icon {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            color: #1a1a1a;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 13px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e8e8e8;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #d0d0d0;
+        }
+
+        .file-info {
+            background: #f9f9f9;
+            border-left: 3px solid #333;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-name {
+            color: #1a1a1a;
+            font-weight: 500;
+            word-break: break-all;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .file-size {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .status {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.loading {
+            background: #efefef;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #333;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #f9f9f9;
+            border-radius: 4px;
+            padding: 18px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.8;
+            border: 1px solid #e8e8e8;
+        }
+
+        .info-box strong {
+            color: #1a1a1a;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .info-box ul {
+            margin-left: 18px;
+            margin-top: 8px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .supported-formats {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        .supported-formats span {
+            display: inline-block;
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin: 0 4px;
+            font-weight: 500;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Document Template Locker</h1>
+            <p>Protect your documents by locking filled cells and keeping empty cells editable</p>
+        </div>
+
+        <div class="file-info" id="fileInfo">
+            <div class="file-name" id="fileName"></div>
+            <div class="file-size" id="fileSize"></div>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="file-input-wrapper">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Drop your file here</div>
+                <div class="upload-subtext">or click to browse</div>
+            </div>
+            <input type="file" id="fileInput" accept=".docx,.xlsx,.xls" />
+        </div>
+
+        <button class="btn btn-primary" id="lockBtn" disabled>🔐 Lock Document</button>
+        <button class="btn btn-secondary" id="clearBtn" style="display: none;">Clear Selection</button>
+
+        <div class="info-box">
+            <strong>How it works:</strong>
+            <ul>
+                <li><strong>✅ Empty cells</strong> remain editable for users to fill in</li>
+                <li><strong>🔒 Cells with content</strong> are locked to prevent modifications</li>
+                <li>Upload your document and click "Lock Document" to process</li>
+                <li>Download the protected file and share with confidence</li>
+            </ul>
+        </div>
+
+        <div class="supported-formats">
+            Supported: <span>.DOCX</span> <span>.XLSX</span> <span>.XLS</span>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const lockBtn = document.getElementById('lockBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const fileInfo = document.getElementById('fileInfo');
+        const status = document.getElementById('status');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+
+        let selectedFile = null;
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            const ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!['docx', 'xlsx', 'xls'].includes(ext)) {
+                showStatus('❌ Unsupported file format. Please upload .docx, .xlsx, or .xls file.', 'error');
+                selectedFile = null;
+                fileInput.value = '';
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = `Size: ${(file.size / 1024).toFixed(2)} KB`;
+            fileInfo.classList.add('show');
+            lockBtn.disabled = false;
+            clearBtn.style.display = 'block';
+            status.classList.remove('show');
+        }
+
+        lockBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            lockBtn.disabled = true;
+            showStatus('<span class="spinner"></span>Processing your document...', 'loading');
+
+            try {
+                const response = await fetch('/lock-document/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    let errorMsg = 'Upload failed';
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.error || errorMsg;
+                    } catch (e) {
+                        errorMsg = `Server error (${response.status})`;
+                    }
+                    throw new Error(errorMsg);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const ext = selectedFile.name.split('.').pop();
+                a.download = `protected_${selectedFile.name.substring(0, selectedFile.name.lastIndexOf('.'))}_(${new Date().getTime()}).${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                showStatus('✅ Document locked successfully! Your file is ready to download.', 'success');
+                setTimeout(() => {
+                    clearForm();
+                }, 3000);
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+                lockBtn.disabled = false;
+            }
+        });
+
+        clearBtn.addEventListener('click', clearForm);
+
+        function clearForm() {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.classList.remove('show');
+            status.classList.remove('show');
+            lockBtn.disabled = true;
+            clearBtn.style.display = 'none';
+        }
+
+        function showStatus(message, type) {
+            status.innerHTML = message;
+            status.className = `status show ${type}`;
+        }
+    </script>
+</body>
+</html>
