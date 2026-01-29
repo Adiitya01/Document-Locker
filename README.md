@@ -83,14 +83,9 @@ Your app will be live at `https://document-locker-xxxx.onrender.com`
 - lxml
 - python-multipart
 
-## License
 
-This project is open source and available under the MIT License.
-
-## Support
-
-For issues or questions, please open an issue on the GitHub repository.
 
 ---
 
 **Live Demo**: https://document-locker.onrender.com
+
